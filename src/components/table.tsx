@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Edit2, Trash2 } from "lucide-react";
 import { memo, useState } from "react";
-import { useProducts } from "../hooks/useProducts";
+import { useProducts } from "../hooks/use-products";
 import { formatCategory, formatCurrency } from "../lib/utils";
 import type { Product } from "../types/product";
 import { ProductDialog } from "./dialog";
@@ -73,19 +73,19 @@ export const Table = memo(
         isCreateOpen: boolean;
         setIsCreateOpen: (v: boolean) => void;
     }) => {
-        const { filteredProducts, deleteProduct, loading } = useProducts();
+        const { filteredValues, delete: deleteFn, isLoading } = useProducts();
         const [editingProduct, setEditingProduct] = useState<Product | null>(
             null,
         );
         const [deletingId, setDeletingId] = useState<number | null>(null);
         const [isExpanded, setIsExpanded] = useState(false);
 
-        if (loading) return <TableSkeleton />;
+        if (isLoading) return <TableSkeleton />;
 
-        const displayedProducts = isExpanded
-            ? filteredProducts
-            : filteredProducts.slice(0, 10);
-        const hasMore = filteredProducts.length > 10;
+        const displayedValues = isExpanded
+            ? filteredValues
+            : filteredValues.slice(0, 10);
+        const hasMore = filteredValues.length > 10;
 
         return (
             <div className="flex flex-col gap-4">
@@ -111,7 +111,7 @@ export const Table = memo(
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredProducts.length === 0 ? (
+                            {filteredValues.length === 0 ? (
                                 <TableRow>
                                     <TableCell
                                         colSpan={5}
@@ -121,7 +121,7 @@ export const Table = memo(
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                displayedProducts.map((product) => (
+                                displayedValues.map((product) => (
                                     <TableRow
                                         key={product.id}
                                         className="hover:bg-muted/30 group"
@@ -177,8 +177,7 @@ export const Table = memo(
                         </TableBody>
                     </TablePrimitive>
 
-                    {}
-                    {!isExpanded && hasMore && filteredProducts.length > 0 && (
+                    {!isExpanded && hasMore && filteredValues.length > 0 && (
                         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
                     )}
                 </div>
@@ -190,7 +189,7 @@ export const Table = memo(
                             onClick={() => setIsExpanded(true)}
                             className="bg-white border-border hover:bg-gray-50 px-8"
                         >
-                            Show All Products ({filteredProducts.length})
+                            Show All Products ({filteredValues.length})
                         </Button>
                     </div>
                 )}
@@ -248,7 +247,7 @@ export const Table = memo(
                                 className="rounded-sm"
                                 onClick={async () => {
                                     if (deletingId) {
-                                        await deleteProduct(deletingId);
+                                        await deleteFn(deletingId);
                                         setDeletingId(null);
                                     }
                                 }}

@@ -1,19 +1,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { memo } from "react";
-import { useProducts } from "../hooks/useProducts";
+import { useProducts } from "../hooks/use-products";
 import { formatCurrency } from "../lib/utils";
 
 export const TopRated = memo(() => {
-    const { topRatedProducts, loading } = useProducts();
+    const { topRatedValues, isLoading } = useProducts();
 
-    if (loading || topRatedProducts.length === 0) return null;
+    if (isLoading || topRatedValues.length === 0) return null;
 
     return (
         <div className="flex flex-col gap-4">
             <h2 className="text-xl font-bold">Top Rated Products</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {topRatedProducts.map((product) => (
+                {topRatedValues.map((product) => (
                     <Card
                         key={product.id}
                         className="overflow-hidden py-0 transition-all"

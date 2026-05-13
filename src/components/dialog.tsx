@@ -31,7 +31,7 @@ import { LoaderCircle, Plus, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { useProducts } from "../hooks/useProducts";
+import { useProducts } from "../hooks/use-products";
 import { formatCategory } from "../lib/utils";
 import type { Product, ProductInput } from "../types/product";
 
@@ -68,7 +68,7 @@ export function ProductDialog({
     setIsDialogOpen,
     onComplete,
 }: ProductDialogProps) {
-    const { categories, createProduct, updateProduct } = useProducts();
+    const { categories, create, update } = useProducts();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -102,9 +102,9 @@ export function ProductDialog({
             };
 
             if (product) {
-                await updateProduct(product.id, productData);
+                await update(product.id, productData);
             } else {
-                await createProduct(productData);
+                await create(productData);
             }
 
             if (onComplete) {
@@ -254,7 +254,9 @@ export function ProductDialog({
                                                             key={cat}
                                                             value={cat}
                                                         >
-                                                            {formatCategory(cat)}
+                                                            {formatCategory(
+                                                                cat,
+                                                            )}
                                                         </SelectItem>
                                                     ))}
                                                 </SelectGroup>
